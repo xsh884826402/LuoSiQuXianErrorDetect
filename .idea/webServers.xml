@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="bbd70573-6689-4901-b491-da6a6b1cf391" name="RemoteLuosi" url="http://10.108.17.101">
+        <fileTransfer host="10.108.17.101" port="22" rootFolder="/home/ubuntu/User/xushenghua" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

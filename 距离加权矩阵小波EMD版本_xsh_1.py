@@ -27,8 +27,8 @@ from scipy.spatial.distance import pdist
 from sklearn.cluster import SpectralClustering
 import pywt
 from pyemd import emd_samples
+import numba as na
 count_i =0
-
 
 def DDuni (DDMatrix):
     DDmax    = DDMatrix.max()
@@ -47,8 +47,7 @@ def DDuni (DDMatrix):
 
 def mycopyfile(srcfile,dstfile):#拷贝文件
     if not os.path.isfile(srcfile):
-        pass
-        # print("%s not exist!"%(srcfile))
+        print("%s not exist!"%(srcfile))
     else:
         fpath,fname=os.path.split(dstfile)    #分离文件名和路径
         if not os.path.exists(fpath):
@@ -62,7 +61,7 @@ def get_data(datafile):#读取数据，根据cos值构造相似矩阵
     data_rows = datashape[0]
     #data_cols = datashape[1]
     test_sub = 1900
-    vsize = data_rows-test_sub
+    vsize = (data_rows-test_sub)//2
     ddpearson = np.zeros((vsize, vsize))
     ddbrc = np.zeros((vsize, vsize))
     ddkl = np.zeros((vsize, vsize))
@@ -133,9 +132,9 @@ def spectral_cluster(datafile):#谱聚类
     adj_mat,unidata = get_data(datafile)
     end = time.time()
     print('----------------------------------运行时间-------------', end - start)
-    time_record = './time_record.txt'
+    time_record = './time_record_1.txt'
     with open(time_record, 'a', encoding='utf-8') as f:
-        s = 'No_speedup' + str(count_i) + 'RunTime' + str(end - start)+'\n'
+        s = 'jit' + str(count_i) + 'RunTime' + str(end - start)+'\n'
         f.write(s)
     cluster_num =2
     #sc = SpectralClustering( cluster_num , affinity='precomputed', n_init=3000, assign_labels='discretize')

@@ -155,8 +155,8 @@ def spectral_cluster():#谱聚类
         mycopyfile(srcfile, dstfile)
 if __name__ =='__main__':
     parser = argparse.ArgumentParser(description="使用谱聚类方法对数据及你高兴聚类")
-    parser.add_argument('-s','--srcfile',help = "源地址")
-    parser.add_argument('-d', '--dstfile', help = "目的地址")
+    parser.add_argument('-s','--srcfile',help = "源地址",default= '\\13D归一化图像\\')
+    parser.add_argument('-d', '--dstfile', help = "目的地址",default = '\\13D分类\\')
     parser.add_argument('--datafile',help ="需要读取的数据的地址")
     args = parser.parse_args()
     print(args.srcfile,args.dstfile,args.datafile)
