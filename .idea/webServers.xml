@@ -2,8 +2,8 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="bbd70573-6689-4901-b491-da6a6b1cf391" name="RemoteLuosi" url="http://10.108.17.101">
-        <fileTransfer host="10.108.17.101" port="22" rootFolder="/home/ubuntu/User/xushenghua" accessType="SFTP">
+      <webServer id="db80f359-03b2-412e-9200-65773fa5b908" name="Remote" url="http://10.108.14.21">
+        <fileTransfer host="10.108.14.21" port="22" rootFolder="/home/pyt" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>

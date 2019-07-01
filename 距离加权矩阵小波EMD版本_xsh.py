@@ -62,7 +62,7 @@ def get_data(datafile):#读取数据，根据cos值构造相似矩阵
     data_rows = datashape[0]
     #data_cols = datashape[1]
     test_sub = 1900
-    vsize = data_rows-test_sub
+    vsize = (data_rows-test_sub)//2
     ddpearson = np.zeros((vsize, vsize))
     ddbrc = np.zeros((vsize, vsize))
     ddkl = np.zeros((vsize, vsize))
@@ -133,7 +133,7 @@ def spectral_cluster(datafile):#谱聚类
     adj_mat,unidata = get_data(datafile)
     end = time.time()
     print('----------------------------------运行时间-------------', end - start)
-    time_record = './time_record.txt'
+    time_record = './time_record_1.txt'
     with open(time_record, 'a', encoding='utf-8') as f:
         s = 'No_speedup' + str(count_i) + 'RunTime' + str(end - start)+'\n'
         f.write(s)
