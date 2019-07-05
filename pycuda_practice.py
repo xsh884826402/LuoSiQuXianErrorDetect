@@ -16,6 +16,7 @@ __device__ void setElement(float *c,int row,int col,int width,float value)
 }
 __global__ void matMulkernel(float *a,float *c)
 {
+    printf("Hello");
     int width = 128;
     int width1 = 20000;
     float Cvalue = 0.0;

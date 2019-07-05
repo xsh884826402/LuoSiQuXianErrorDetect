@@ -39,17 +39,34 @@ srcpath = 'C:/Users/hxk/Desktop/螺丝拧紧曲线matlab/分类代码20180802/�
 negdespath = 'C:/Users/hxk/Desktop/螺丝拧紧曲线matlab/分类代码20180802/LSTM文件输出异常/'  # 存放异常文件图像
 posdespath = 'C:/Users/hxk/Desktop/螺丝拧紧曲线matlab/分类代码20180802/LSTM文件输出正常/'  # 存放正常图像图像
 
-lstmtrain_data =  pd.read_excel('C:/Users/hxk/Desktop/pythontest1/lstmtraindata1.xlsx',header=None, skiprows=None)  # 训练数据文件
-datauni_all    =  pd.read_excel('C:/Users/hxk/Desktop/pythontest1/datauni5k.xlsx',header=None, skiprows=None)       #  评价数据文件
-datashape = lstmtrain_data.shape
-lstmtrain_data_rows = datashape[0]
-lstmtrain_data_cols= datashape[1]
+train_data_dir = './data/lstmtraindata1.xlsx'
+test_data_dir = './data/datauni_512_928.xlsx'
+train_data = pd.read_excel(train_data_dir)
+test_data = pd.read_excel(test_data_dir)
+train_data_row_num,train_data_col_num =train_data.shape[0],train_data.shape[1]
+
+# lstmtrain_data =  pd.read_excel('C:/Users/hxk/Desktop/pythontest1/lstmtraindata1.xlsx',header=None, skiprows=None)  # 训练数据文件
+# datauni_all    =  pd.read_excel('C:/Users/hxk/Desktop/pythontest1/datauni5k.xlsx',header=None, skiprows=None)       #  评价数据文件
+# datashape = lstmtrain_data.shape
+# lstmtrain_data_rows = datashape[0]
+# lstmtrain_data_cols= datashape[1]
 
 
 traindata_features = 100
 lstmdata_all_list  =[]
 labeldata=[]
 samples_number_train = 58
+
+for i in range(samples_number_train):
+    temp_lstm_data = train_data.values[i][0:traindata_features]/1000
+    lstmdata_all_list.append(temp_lstm_data.tolist())
+    if i < 27:
+        labeldata.append([0,1])
+    else:
+        labeldata.append([1,0])
+
+
+
 for lstmtrain_datai  in range (samples_number_train):
     tmp_alldata = lstmtrain_data.values[lstmtrain_datai]
     tmp_lstmdata = tmp_alldata[0:traindata_features]/1000
