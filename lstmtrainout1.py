@@ -13,6 +13,7 @@ from sklearn.metrics import mean_squared_error
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
+import keras.models as models
 from keras.callbacks import Callback
 from keras.models import Sequential
 from keras.layers import LSTM, Dense, Activation
@@ -35,12 +36,17 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"]='2' # 只显示 warning 和 Error
 os.environ["TF_CPP_MIN_LOG_LEVEL"]='3' # 只显示 Error
 
 
-srcpath = 'C:/Users/hxk/Desktop/螺丝拧紧曲线matlab/分类代码20180802/截取后图像归一化/'     # 所有文件图像
-negdespath = 'C:/Users/hxk/Desktop/螺丝拧紧曲线matlab/分类代码20180802/LSTM文件输出异常/'  # 存放异常文件图像
-posdespath = 'C:/Users/hxk/Desktop/螺丝拧紧曲线matlab/分类代码20180802/LSTM文件输出正常/'  # 存放正常图像图像
+# srcpath = 'C:/Users/hxk/Desktop/螺丝拧紧曲线matlab/分类代码20180802/截取后图像归一化/'     # 所有文件图像
+# negdespath = 'C:/Users/hxk/Desktop/螺丝拧紧曲线matlab/分类代码20180802/LSTM文件输出异常/'  # 存放异常文件图像
+# posdespath = 'C:/Users/hxk/Desktop/螺丝拧紧曲线matlab/分类代码20180802/LSTM文件输出正常/'  # 存放正常图像图像
 
+srcpath = 'E:/Project/螺丝拧紧/第一批数据/可视化图片/截取后图像归一化/'     # 所有文件图像
+negdespath = 'E:/Project/螺丝拧紧/第一批数据/可视化图片/LSTM文件输出异常/'  # 存放异常文件图像
+posdespath = 'E:/Project/螺丝拧紧/第一批数据/可视化图片/LSTM文件输出正常/'  # 存放正常图像图像
+# shape = 40 * 256
 train_data_dir = './data/lstmtraindata1.xlsx'
-test_data_dir = './data/datauni_512_928.xlsx'
+# shape = 6000 * 512
+test_data_dir = './data/datauni1_512_928.xlsx'
 train_data = pd.read_excel(train_data_dir)
 test_data = pd.read_excel(test_data_dir)
 train_data_row_num,train_data_col_num =train_data.shape[0],train_data.shape[1]
@@ -55,45 +61,47 @@ train_data_row_num,train_data_col_num =train_data.shape[0],train_data.shape[1]
 traindata_features = 100
 lstmdata_all_list  =[]
 labeldata=[]
-samples_number_train = 58
-
+samples_number_train = 39
+uni_max_value = 1000
 for i in range(samples_number_train):
-    temp_lstm_data = train_data.values[i][0:traindata_features]/1000
+    temp_lstm_data = train_data.values[i][0:traindata_features]/uni_max_value
     lstmdata_all_list.append(temp_lstm_data.tolist())
+    #猜测 这里的27可能指的是做demo的时候前27条数据的是正类
     if i < 27:
         labeldata.append([0,1])
     else:
         labeldata.append([1,0])
+labeldata_array = np.array(labeldata)
+lstmdata_all_array = np.array(lstmdata_all_list)
 
 
+# for lstmtrain_datai  in range (samples_number_train):
+#     tmp_alldata = lstmtrain_data.values[lstmtrain_datai]
+#     tmp_lstmdata = tmp_alldata[0:traindata_features]/1000
+#     #print (tmp_lstmdata)
+#     #lstmdata_all_list.append(tmp_alldata.tolist())
+#     #lstmdata_all_list = lstmdata_all_list +  tmp_lstmdata.tolist()
+#     lstmdata_all_list.append(tmp_lstmdata.tolist())
+#     if ( lstmtrain_datai < 27):
+#         labeldata.append([0,1])
+#         #print ( 'file index  = ',tmp_alldata[100],'datai =',lstmtrain_datai )
+#     else:
+#         labeldata.append([1,0])
+#         #print('file index  = ', tmp_alldata[100], 'datai =', lstmtrain_datai)
+# #print(labeldata)
 
-for lstmtrain_datai  in range (samples_number_train):
-    tmp_alldata = lstmtrain_data.values[lstmtrain_datai]
-    tmp_lstmdata = tmp_alldata[0:traindata_features]/1000
-    #print (tmp_lstmdata)
-    #lstmdata_all_list.append(tmp_alldata.tolist())
-    #lstmdata_all_list = lstmdata_all_list +  tmp_lstmdata.tolist()
-    lstmdata_all_list.append(tmp_lstmdata.tolist())
-    if ( lstmtrain_datai < 27):
-        labeldata.append([0,1])
-        #print ( 'file index  = ',tmp_alldata[100],'datai =',lstmtrain_datai )
-    else:
-        labeldata.append([1,0])
-        #print('file index  = ', tmp_alldata[100], 'datai =', lstmtrain_datai)
-#print(labeldata)
-
-labeldata_array  = np.array(labeldata)
-
-#print('Debug: lstmdata_all_list =  ', lstmdata_all_list)
-#print('Debug: lstmdata_all_list len  =  ', len(lstmdata_all_list))
-
-lstmdata_all_array= np.array(lstmdata_all_list)
-
-#print('Debug: lstmdata_all_array   =  '         , lstmdata_all_array)
+# labeldata_array  = np.array(labeldata)
+#
+# #print('Debug: lstmdata_all_list =  ', lstmdata_all_list)
+# #print('Debug: lstmdata_all_list len  =  ', len(lstmdata_all_list))
+#
+# lstmdata_all_array= np.array(lstmdata_all_list)
+#
+# #print('Debug: lstmdata_all_array   =  '         , lstmdata_all_array)
 #print('Debug: lstmdata_all_array shape   =  '  ,  lstmdata_all_array.shape)
 
 
-def train_test(labeldata_array ):
+def train_test(labeldata_array,train = True ,model_dir='./model/model.h5'):
     global samples
     global losses
 
@@ -146,21 +154,25 @@ def train_test(labeldata_array ):
 
 
         # 使用同一个样本和所有待测试样本比较
-        for i in range(5):
-            print("---------------- 循环次数 = ",i,'------------------------------')
-            tmp_lstm = lstmdata_all_array
-            tmp_lstm = tmp_lstm.reshape(samples_number_train,1,100)
-            labeldata_array = labeldata_array.reshape(samples_number_train,1,2)
-            train(tmp_lstm,labeldata_array,samples_number_train*100)
+        if train:
+            for i in range(5):
+                print("---------------- 循环次数 = ",i,'------------------------------')
+                tmp_lstm = lstmdata_all_array
+                tmp_lstm = tmp_lstm.reshape(samples_number_train,1,100)
+                labeldata_array = labeldata_array.reshape(samples_number_train,1,2)
+                train(tmp_lstm,labeldata_array,samples_number_train*100)
+                model.save(model_dir)
+        else:
+            model = models.load_model(model_dir)
         #print(tmp_lstm)
         #core, acc = model.evaluate(tmp_lstm, labeldata_array, batch_size=52)
         #print ( score  ,acc)
-        for tti in range(5000):
-           test1 = datauni_all.values[tti]
-           test11 =test1[0:traindata_features] / 1000
-           test111 = test11.reshape(1,1,100)
+        for tti in range(5999):
+           test =test_data.values[tti]
+           test =test[0:traindata_features] / uni_max_value
+           test = test.reshape(1,1,100)
            #print(test111)
-           prediction = model.predict(test111)
+           prediction = model.predict(test)
            index = np.argmax(prediction)
            #print('数字 = ', tti, '类别=', index)
            if (index == 1):
@@ -182,6 +194,6 @@ def train_test(labeldata_array ):
 
 
 if __name__ == '__main__':
-    train_test(labeldata_array )
+    train_test(labeldata_array,train = True,model_dir  = './model/model.h5')
 
 

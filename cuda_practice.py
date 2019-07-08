@@ -1,7 +1,7 @@
 import numpy as np
 from timeit import default_timer as timer
 import numba as na
-
+#16秒
 @na.vectorize(["float32(float32,float32)"],target='cuda')
 def vectorMul(a, b):
 
