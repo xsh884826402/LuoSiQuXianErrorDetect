@@ -167,6 +167,7 @@ def train_test(labeldata_array,train = True ,model_dir='./model/model.h5'):
         #print(tmp_lstm)
         #core, acc = model.evaluate(tmp_lstm, labeldata_array, batch_size=52)
         #print ( score  ,acc)
+
         for tti in range(5999):
            test =test_data.values[tti]
            test =test[0:traindata_features] / uni_max_value
@@ -194,6 +195,6 @@ def train_test(labeldata_array,train = True ,model_dir='./model/model.h5'):
 
 
 if __name__ == '__main__':
-    train_test(labeldata_array,train = True,model_dir  = './model/model.h5')
+    train_test(labeldata_array,train = False,model_dir  = './model/model.h5')
 
 

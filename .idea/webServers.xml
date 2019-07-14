@@ -2,7 +2,7 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="db80f359-03b2-412e-9200-65773fa5b908" name="Remote" url="http://10.108.14.21">
+      <webServer id="f632ffa7-04d7-4288-a13e-72ad31b38f83" name="Remote" url="http://10.108.14.21">
         <fileTransfer host="10.108.14.21" port="22" rootFolder="/home/pyt" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />

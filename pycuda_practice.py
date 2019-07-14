@@ -1,4 +1,7 @@
-#32，32 13秒
+# 20000 *20000  13 s
+# 25000 * 25000 20s
+# 30000 * 30000 28s
+
 import pycuda.driver as cuda
 import pycuda.autoinit
 from pycuda.compiler import SourceModule
@@ -16,9 +19,8 @@ __device__ void setElement(float *c,int row,int col,int width,float value)
 }
 __global__ void matMulkernel(float *a,float *c)
 {
-    printf("Hello");
     int width = 128;
-    int width1 = 20000;
+    int width1 = 25000;
     float Cvalue = 0.0;
     int row = threadIdx.y + blockIdx.y*blockDim.y;
     int col = threadIdx.x + blockIdx.x*blockDim.x;
@@ -31,10 +33,11 @@ __global__ void matMulkernel(float *a,float *c)
 }
 """)
 start = time.time()
-a = numpy.random.randn(20000,128)
+N = 25000
+a = numpy.random.randn(N,128)
 a = a.astype(numpy.float32)
 print('nbytes',a.nbytes,a.shape)
-c = numpy.zeros((20000,20000),dtype=numpy.float32)
+c = numpy.zeros((N,N),dtype=numpy.float32)
 print('c nbytes',c.nbytes)
 a_gpu = cuda.mem_alloc(a.nbytes)
 c_gpu = cuda.mem_alloc(c.nbytes)
@@ -44,7 +47,7 @@ cuda.memcpy_htod(a_gpu,a)
 
 func = mod.get_function("matMulkernel")
 threadsPerBlock = (32,32,1)
-grid =(20000//32,20000//32)
+grid =(N//32,N//32)
 width = '128'
 # width_gpu = cuda.mem_alloc(sys.getsizeof(width))
 # cuda.memcpy_htod(width_gpu,width)
@@ -56,9 +59,9 @@ print(a.shape)
 print("time",time.time()-start)
 print("c末尾",c[-1][-1],numpy.dot(a[-1],a[-1]))
 index = 0
-for i in range(20000):
-    if c[i][0] ==0:
-        print('Here')
-        index = i
-        break
-print(index,c[index-1],c[index],c[index+1])
+# for i in range(20000):
+#     if c[i][0] ==0:
+#         print('Here')
+#         index = i
+#         break
+# print(index,c[index-1],c[index],c[index+1])
